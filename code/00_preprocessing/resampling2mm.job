@@ -1,0 +1,43 @@
+#!/bin/bash
+#SBATCH --job-name=pre_processing
+#SBATCH --output=/home/k2252300/Desktop/01_dHCP/03_preprocessing/log/%j.out
+#SBATCH --array=0-77%20
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=16G
+#SBATCH --time=3-0:00
+
+source /software/system/modules/latest/init/bash
+module use /software/system/modules/NaN/generic
+module purge
+module load nan
+module load fsl/6.0.7.4
+module list
+
+SRUN_CPUS_PER_TASK=2
+
+file_list="/home/k2252300/Desktop/01_dHCP/03_preprocessing/subject_files_crb_crbl_dr.txt"
+output_dir_2mm="/home/k2252300/Desktop/01_dHCP/03_preprocessing/2mm"
+output_dir_2mm_smooth="/home/k2252300/Desktop/01_dHCP/03_preprocessing/2mm_smooth"
+
+file_path=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" "$file_list")
+
+
+if [[ -f "$file_path" ]]; then
+    echo "Processing file: $file_path"
+
+    # Generate filenames for outputs
+    base_name=$(basename "${file_path%.nii.gz \}")
+    output_2mm="$output_dir_2mm/${base_name}_2mm.nii.gz \"
+    output_2mm_smooth="$output_dir_2mm_smooth/${base_name}_2mm_smooth_1-274.nii.gz \"
+
+    # First operation: FLIRT
+    flirt -in "$file_path" -ref "$file_path" -applyisoxfm 2 -interp nearestneighbour -out "$output_2mm"
+    echo "FLIRT output saved to: $output_2mm"
+
+    # Second operation: fslmaths
+    fslmaths "$output_2mm" -kernel gauss 1.274 -fmean "$output_2mm_smooth"
+    echo "Smoothed output saved to: $output_2mm_smooth"
+else
+    echo "File not found: $file_path"
+fi
+

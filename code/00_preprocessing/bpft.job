@@ -1,0 +1,38 @@
+#!/bin/bash
+#SBATCH --job-name=bpft
+#SBATCH --output=/home/k2252300/Desktop/01_dHCP/09_secondProcessing/log/%j.out  
+#SBATCH --error=//home/k2252300/Desktop/01_dHCP/09_secondProcessing/log/%j.err  
+#SBATCH --cpus-per-task=2     
+#SBATCH --array=0-18%20                
+#SBATCH --mem=16G                             
+#SBATCH --time=3-0:00                         
+
+# Load SLURM modules
+source /software/system/modules/latest/init/bash
+module use /software/system/modules/NaN/generic
+module purge
+module load nan
+module load miniconda/3
+
+# Activate the Conda environment
+conda activate /home/k2252300/.conda/envs/ni_python
+
+# Print Conda environment details
+echo "Active Conda environment: $CONDA_DEFAULT_ENV"
+which python
+python -c "import sys; print(sys.executable)"
+python -c "import nilearn; print('nilearn version:', nilearn.__version__)"
+which python
+python --version
+
+# Run the Python script
+
+SCRIPT="/home/k2252300/Desktop/reusable_scripts/preprocessing/neonatal_fmri/bandpass_filtering_withfunction.py"
+INPUT_FOLDER="/home/k2252300/Desktop/03_bibs/02_neonatal_fmri/data/2mm_smooth"
+OUTPUT_FOLDER="/home/k2252300/Desktop/03_bibs/02_neonatal_fmri/data/2mm_smooth_bpft0-2hz"
+FILE_LIST="/home/k2252300/Desktop/03_bibs/02_neonatal_fmri/01_bibs_files_QCd.txt"
+
+FILENAME=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" "$FILE_LIST")
+
+/home/k2252300/.conda/envs/ni_python/bin/python "$SCRIPT" "$FILENAME" "$INPUT_FOLDER" "$OUTPUT_FOLDER"
+

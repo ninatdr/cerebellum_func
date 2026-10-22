@@ -1,0 +1,33 @@
+#!/bin/bash
+#SBATCH --job-name=regress2mm
+#SBATCH --output=/home/k2252300/Desktop/01_dHCP/logs/preprocessing/%j.out  
+#SBATCH --error=/home/k2252300/Desktop/01_dHCP/logs/preprocessing/%j.err  
+#SBATCH --array=0-154%20
+#SBATCH --cpus-per-task=2                    
+#SBATCH --mem=16G                             
+#SBATCH --time=3-0:00                         
+
+# Load SLURM modules
+source /software/system/modules/latest/init/bash
+module use /software/system/modules/NaN/generic
+module purge
+module load nan
+module load fsl
+module load miniconda/3
+
+# Activate the Conda environment
+conda activate /home/k2252300/.conda/envs/ni_python
+
+# Print Conda environment details
+echo "Active Conda environment: $CONDA_DEFAULT_ENV"
+which python
+python --version
+
+# Run the Python script
+SUBJECT_LIST="/home/k2252300/Desktop/01_dHCP/cerebellum_func/subject_list/all_subjects.txt"
+FOLDER1="/home/k2252300/Desktop/01_dHCP/data/01_preprocessed_termborn/2mm_smooth_bpft0-2hz"
+FOLDER2=""
+OUTPUT_FOLDER="/home/k2252300/Desktop/01_dHCP/data/01_preprocessed_termborn/2mm_smooth_bpft0-2hz_CleanedCerebellum_050526_2"
+SUBJ=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" $SUBJECT_LIST)
+
+/home/k2252300/.conda/envs/ni_python/bin/python /home/k2252300/Desktop/01_dHCP/scripts/01_preprocessing/regress_crb_signal/regress_out_crb_overlap_parallel.py "$SUBJ" "$FOLDER1" "$FOLDER2" "$OUTPUT_FOLDER"
