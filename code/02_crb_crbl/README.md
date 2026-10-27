@@ -76,7 +76,7 @@ Written under `CLUSTER_FOLDER` (default `d20/`):
 
 ---
 
-## 2. Cluster strength vs. age (`cluster_strength_pma_analysis.py`)
+## 2. Cluster strength vs. age (`cluster_strength_pma.py`)
 
 Edit the **CONFIG** section, then run:
 
