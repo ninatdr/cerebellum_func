@@ -37,9 +37,8 @@ with pingouin 0.5.5. FSL is needed upstream to run MELODIC and dual regression.
 ## Data
 
 The dHCP data are available from the [dHCP data release](https://www.developingconnectome.org/data-release/)
-under its data-use agreement and are not included in this repository. The clinical
-database used here (`db_outcome_imd.csv`) is derived from dHCP metadata and likewise
-not shared.
+under its data-use agreement and are not included in this repository. The demographics
+database used here (`demographics.csv`) is derived from dHCP metadata.
 
 ## 1. Compute core network strength
 
@@ -105,13 +104,11 @@ Postnatal weeks (`pnw`) = PMA at scan − GA at birth.
 
 Fitted separately for every retained component:
 
-1. **PMA model:** `CNS ~ PMA at scan + sex + motion outliers`
-2. **PNW/GA model:** `CNS ~ postnatal weeks + GA at birth + sex + motion outliers`
+**PMA model:** `CNS ~ PMA at scan + sex + motion outliers`
 
-For both, the effect of interest is tested with a partial Spearman correlation
+The effect of interest is tested with a partial Spearman correlation
 (`pingouin.partial_corr`) controlling for the other predictors. P-values are
-FDR-corrected (Benjamini–Hochberg, α = 0.05) across components, separately for each
-tested effect (PMA; PNW; GA). OLS estimates (β, SE, t, 95% CI, R²) are reported
+FDR-corrected (Benjamini–Hochberg, α = 0.05) across components. OLS estimates (β, SE, t, 95% CI, R²) are reported
 alongside for effect sizes.
 
 ### Outputs (in `OUTPUT_DIR`)
@@ -119,9 +116,7 @@ alongside for effect sizes.
 | File | Content |
 |---|---|
 | `ols_results_pma.txt` / `.csv` | PMA model: OLS summaries and partial correlations with raw and FDR-corrected p-values |
-| `ols_results_pnw.txt` / `.csv` | PNW/GA model: partial correlations for PNW and GA, FDR-corrected p-values, R² |
 | `fig2c_cns_vs_pma_significant.png` | CNS (residualised for sex and motion outliers) vs. PMA for FDR-significant components |
-| `fig2c_cns_vs_pnw_significant.png` | CNS (residualised for GA at birth, sex, motion outliers) vs. postnatal weeks, FDR-significant components |
 | `fig1a_networks.png`, `fig1a_atlas.png` | Cerebellar flatmaps of each network; winner-take-all atlas |
 | `fig2b_component_map.png`, `fig2b_weekly_maps.png` | Single-component map; the same map by postmenstrual week |
 
@@ -130,7 +125,3 @@ Scatterplots are only produced if at least one component survives FDR correction
 ## Citation
 
 [Add paper reference here]
-
-## License
-
-[Add license here]
