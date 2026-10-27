@@ -8,7 +8,7 @@ Connectome Project (dHCP) dataset.
 | Script | Purpose |
 |---|---|
 | `template_cluster_dc.py` | Builds binary cluster masks from an ICA, computes template degree-centrality (DC) maps over the cerebellum, transforms them to MNI space and plots them on the cerebellar flatmap |
-| `cluster_strength_pma_analysis.py` | Models per-subject cluster strength against age (PMA at scan; postnatal weeks and GA at birth), FDR-corrects across clusters and plots significant effects |
+| `cluster_strength_pma.py` | Models per-subject cluster strength against age (PMA at scan), FDR-corrects across clusters and plots significant effects |
 
 ## Requirements
 
@@ -19,14 +19,14 @@ pip install numpy pandas matplotlib seaborn statsmodels "pingouin==0.5.5" nibabe
 ```
 
 `pingouin` is pinned because newer releases (tested: 0.7.0) renamed the `p-val` column
-returned by `partial_corr`, which `cluster_strength_pma_analysis.py` expects. FSL
+returned by `partial_corr`, which `cluster_strength_pma.py` expects. FSL
 (`applywarp`) is required for the MNI transform step of `template_cluster_dc.py`.
 
 ## Data
 
 The dHCP data are available from the [dHCP data release](https://www.developingconnectome.org/data-release/)
-under its data-use agreement and are not included here. The clinical database
-(`DB_with_cerebellum_coverage.csv`) is derived from dHCP metadata and is likewise not shared.
+under its data-use agreement and are not included here. The demographics database
+(`demographics.csv`) is derived from dHCP metadata.
 
 ---
 
@@ -99,33 +99,24 @@ Postnatal weeks (`pnw`) = PMA at scan − GA at birth.
 
 Fitted separately for every retained cluster:
 
-1. **PMA model:** `strength ~ PMA at scan + motion outliers + sex`
-2. **PNW/GA model:** `strength ~ postnatal weeks + GA at birth + motion outliers + sex`
+**PMA model:** `strength ~ PMA at scan + motion outliers + sex`
 
 The effect of interest is tested with a partial Spearman correlation
 (`pingouin.partial_corr`) controlling for the other predictors (PNW and GA each control
 for the other). P-values are FDR-corrected (Benjamini–Hochberg, α = 0.05) across
-clusters, separately for each effect (PMA, PNW, GA). OLS β, p-values and R² are reported
-alongside as effect sizes.
+clusters. OLS β, p-values and R² are reported alongside as effect sizes.
 
 ### Outputs (in `OUTPUT_DIR`)
 
 | File | Content |
 |---|---|
 | `results_pma_retained_clusters_FDR.csv` | Partial r / p, FDR-corrected p and significance flag, OLS β / p / R² for the PMA model |
-| `results_pnw_ga_retained_clusters_FDR.csv` | The same for PNW and GA effects |
 | `plot_<cluster>_pma.png` | Strength (residualised for motion outliers and sex) vs. PMA at scan, FDR-significant clusters only |
-| `plot_<cluster>_pnw.png` | Strength (residualised for GA at birth, motion outliers, sex) vs. postnatal age |
-| `plot_<cluster>_ga.png` | Strength (residualised for PNW, motion outliers, sex) vs. GA at birth |
 
 Plots are only produced for clusters that survive FDR correction for that effect.
-Set `RUN_PMA_PLOTS` / `RUN_PNW_GA_PLOTS` to `False` to skip plotting, and `SHOW_PLOTS` to
+Set `RUN_PMA_PLOTS` to `False` to skip plotting, and `SHOW_PLOTS` to
 `False` to save figures without displaying them.
 
 ## Citation
 
 [Add paper reference here]
-
-## License
-
-[Add license here]
