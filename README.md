@@ -2,7 +2,7 @@
 
 This is the code necessary for replicating findings in the manuscript "Early development of cerebellar functional connectivity"
 
-### Preprint
+### Preprint:
 
 Early development of cerebellar functional connectivity
 Nina Treder, Sunniva Fenn-Moltu, Stuart Oldham, Qianwen Chang, Jonathan O’Muircheartaigh, Dimitar Kostadinov, Tomoki Arichi, Gráinne M. McAlonan, Dafnis Batalle
