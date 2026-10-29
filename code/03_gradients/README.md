@@ -1,4 +1,4 @@
-# Cerebellar Functional Gradient Analysis
+# Functional Gradient Analysis
 
 Code for computing functional connectivity gradients of the neonatal cerebellum from resting-state fMRI data, generating group- and subject-level gradient maps, and assessing developmental associations with age-related measures in the developing Human Connectome Project (dHCP) dataset.
 
